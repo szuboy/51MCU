@@ -1,0 +1,175 @@
+C51 COMPILER V8.08   MAIN                                                                  10/09/2019 19:51:00 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\software\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*
+   2          * @time: 2019-10-9 
+   3          * @author: Jeremy.Zhang, George
+   4          * @function: IO Parallel Control
+   5          */
+   6          
+   7          #include "STC12C5A60S2.h"
+   8          
+   9          
+  10          /* content: which one is 1(实验内容: 相应的实验内容置为1) */
+  11          #define IO_EXP1  0      //按下KEY1, 第一位数码管从0~9依次显示
+  12          #define IO_EXP2  1      //按下KEY2, 切换模式，按下KEY1数码管从0~9依次显示，并伴随有蜂鸣器的蜂鸣
+  13          
+  14          
+  15          /* redefine data type(重定义数据类型别名) */
+  16          typedef unsigned char u8;
+  17          
+  18          
+  19          /* define all pins and variable(定义所有引脚和变量) */
+  20          unsigned char NUMS[11] = {0x03, 0x9F, 0x25, 0x0D, 0x99, 0x49, 0x41, 0x1F, 0x01, 0x09, 0xff};    //数字列表
+             -(最后一位清空)
+  21          sbit KEY1 = P3^2;      //KEY1引脚
+  22          sbit KEY2 = P3^4;          //KEY2引脚
+  23          sbit BEEP = P1^0;      //蜂鸣器引脚(低电平有效) 
+  24          
+  25          
+  26          /* define Eight-Segment pins, Low-Level works(定义八段数码管引脚, 低电平有效)*/
+  27          sbit SM_G1 = P2^0;  
+  28          sbit SM_G2 = P2^1;
+  29          sbit SM_G3 = P2^2;
+  30          sbit SM_G4 = P2^3;
+  31          
+  32          
+  33          /*
+  34          * @function: choose_SM, 控制哪一个数码管显示
+  35          * @args: index: 数码管序号; status: 低电平有效
+  36          * @return: None
+  37          */
+  38          void choose_SM(u8 index, u8 status)
+  39          {
+  40   1              switch (index)
+  41   1              {
+  42   2                      case 1:
+  43   2                              SM_G1 = status;
+  44   2                              break;
+  45   2                      case 2:
+  46   2                              SM_G2 = status;
+  47   2                              break;
+  48   2                      case 3:
+  49   2                              SM_G3 = status;
+  50   2                              break;
+  51   2                      case 4:
+  52   2                              SM_G4 = status;
+  53   2                              break;
+  54   2                      default:
+C51 COMPILER V8.08   MAIN                                                                  10/09/2019 19:51:00 PAGE 2   
+
+  55   2                              break;
+  56   2              }
+  57   1      }
+  58          
+  59          
+  60          /*
+  61          * @function: delay_by_2ms, 延时函数, 2ms的基
+  62          * @args: time: 时间
+  63          * @return: None
+  64          */
+  65          void delay_by_2ms(unsigned long int time)
+  66          {
+  67   1              unsigned long int i;
+  68   1              for (i = 0; i < time * 100; i++);
+  69   1      }
+  70          
+  71          
+  72          
+  73          #if IO_EXP1
+              
+              void main()
+              {
+                      /* define nums index variable(定义数字索引变量) */
+                      u8 n_index;
+                      while (1)
+                      {
+                              if (0 == KEY1)
+                              {
+                                      choose_SM(1, 0);
+                                      for (n_index = 0; n_index <= 9; n_index++)
+                                      {
+                                              /* display nums and delay 1s(显示数字, 并延时1秒) */
+                                              P0 = NUMS[n_index];
+                                              delay_by_2ms(500);
+                                      }
+                                      /* clear diaplay nums(清空显示数字) */
+                                      P0 = NUMS[n_index];
+                              }
+                      }               
+              }
+              
+              #endif
+  97          
+  98          
+  99          #if IO_EXP2
+ 100          
+ 101          void main()
+ 102          {
+ 103   1              /* define nums index and Eight-Segment index variable(定义数字和数码管索引变量) */
+ 104   1              u8 n_index = 0, s_index = 1;
+ 105   1      
+ 106   1              /* config Beeper Mode and default choose Eight-Segment 1(配置蜂鸣器为推挽输出模式, 默认选择数码管1) */
+ 107   1              P1M0 = 0x01;
+ 108   1              choose_SM(1, 0);        
+ 109   1      
+ 110   1              while (1)
+ 111   1              {
+ 112   2                      if (0 == KEY2)
+ 113   2                      {
+ 114   3                              /* request to limit range 1-4, setting Eight-Segment mode(限制范围到1-4, 循环选择, 同时设置显示的上一个
+             -和当前的数码管的模式, ) */
+ 115   3                              s_index++;
+C51 COMPILER V8.08   MAIN                                                                  10/09/2019 19:51:00 PAGE 3   
+
+ 116   3                              if (s_index < 5)
+ 117   3                              {
+ 118   4                                      choose_SM(s_index - 1, 1);
+ 119   4                                      choose_SM(s_index, 0);
+ 120   4                              }
+ 121   3                              else
+ 122   3                              {
+ 123   4                                      s_index = 1;
+ 124   4                                      choose_SM(1, 0);
+ 125   4                                      choose_SM(4, 1);
+ 126   4                              }
+ 127   3                      }
+ 128   2      
+ 129   2                      if (0 == KEY1)
+ 130   2                      {
+ 131   3                              for (n_index = 0; n_index <= 9; n_index++)
+ 132   3                              {
+ 133   4                                      /* display nums and delay 1s with beeper(显示数字, 并延时1秒, 同时伴随蜂鸣器工作) */
+ 134   4                                      P0 = NUMS[n_index];
+ 135   4                                      BEEP = 0;
+ 136   4                                      delay_by_2ms(250);
+ 137   4                                      BEEP = 1;
+ 138   4                                      delay_by_2ms(250);
+ 139   4                              }
+ 140   3                              /* clear diaplay nums(清空显示数字) */
+ 141   3                              P0 = NUMS[n_index];     
+ 142   3                      }
+ 143   2              }
+ 144   1      }
+ 145          
+ 146          #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    219    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
