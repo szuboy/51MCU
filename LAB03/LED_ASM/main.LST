@@ -1,0 +1,125 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 10/10/2019 10:10:44 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.00d
+OBJECT MODULE PLACED IN main.OBJ
+ASSEMBLER INVOKED BY: D:\software\Keil\C51\BIN\A51.EXE main.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;
+                       2     ; @time: 2019-10-10 
+                       3     ; @author: Jeremy.Zhang
+                       4     ; @function: LED blinks based on assemble program
+                       5     ;
+                       6     
+                       7     
+                       8     ; pins redifine, low works(“Ω≈÷ÿ√¸√˚, µÕµÁ∆Ω”––ß)
+  00A4                 9     LED1 BIT P2.4
+  00A5                10     LED2 BIT P2.5
+  00A6                11     LED3 BIT P2.6
+  00A7                12     LED4 BIT P2.7
+  0090                13     BEEP BIT P1.0
+                      14     
+                      15     
+                      16     ; EQU(Equal) assign(∏≥÷µ)
+  006F                17     DelayTimes_100MS EQU 6FH
+                      18     
+                      19     
+                      20     ; program start(÷˜≥Ã–Úø™ º) 
+0000                  21     ORG 0000H                           ;∂®“Â≥Ã–Ú∆ º‘À––µÿ÷∑ 
+0000 020100           22     LJMP START                          ;Ã¯◊™µΩ'START'±Íº«∑˚¥¶≥Ã–Ú‘À–– 
+                      23     
+                      24     
+0100                  25     ORG 0100H
+0100                  26     START:
+0100 758170           27         MOV SP, #70H                    ;…Ë÷√∂—’ª, ƒøµƒ: ±£¥Êæ÷≤ø±‰¡ø∫Õ÷–∂œ∑µªÿ 
+0103                  28     START1:
+0103 12011A           29         LCALL LEDRUN                    ;µ˜”√LED∫Ø  
+0106 020103           30         LJMP  START1                    ;Ã¯ªÿ'START1'±Íº«∑˚, ¿‡À∆”⁄while(1)—≠ª∑ 
+                      31     
+                      32     
+                      33     ; Delay 100Ms function(—” ±100MS∫Ø )
+0109                  34     Delay100MS:
+0109 AF6F             35         MOV R7, DelayTimes_100MS
+                      36         
+010B 7E0A             37         Delay100MS_1:  MOV R6, #10
+010D 7D96             38         Delay100MS_2:  MOV R5, #150
+010F 7CC8             39         Delay100MS_3:  MOV R4, #200
+0111 DCFE             40         Delay100MS_4:  DJNZ R4, Delay100MS_4
+0113 DDFA             41                        DJNZ R5, Delay100MS_3
+0115 DEF6             42                        DJNZ R6, Delay100MS_2
+0117 DFF2             43                        DJNZ R7, Delay100MS_1
+0119 22               44     RET                                 
+                      45     
+                      46     
+                      47     ; LED blinks function(LED≈‹¬Ìµ∆∫Ø )
+011A                  48     LEDRUN: 
+011A C2A4             49         CLR   LED1                       ;…Ë÷√µÕµÁ∆Ω 
+011C D2A5             50         SETB  LED2                       ;…Ë÷√∏ﬂµÁ∆Ω 
+011E D2A6             51         SETB  LED3
+0120 D2A7             52         SETB  LED4
+0122 C290             53         CLR   BEEP
+0124 756F0A           54         MOV   DelayTimes_100MS, #10      ;…Ë÷√–Ë“™10∏ˆ—” ±100MS 
+0127 120109           55         LCALL Delay100MS                 ;µ˜”√Delay100MS∫Ø 
+                      56        
+012A D2A4             57         SETB  LED1                       
+012C C2A5             58         CLR   LED2
+A51 MACRO ASSEMBLER  MAIN                                                                 10/10/2019 10:10:44 PAGE     2
+
+012E D2A6             59         SETB  LED3
+0130 D2A7             60         SETB  LED4 
+0132 D290             61         SETB  BEEP                     
+0134 756F0A           62         MOV   DelayTimes_100MS, #10       
+0137 120109           63         LCALL Delay100MS 
+                      64     
+013A D2A4             65         SETB  LED1                       
+013C D2A5             66         SETB  LED2
+013E C2A6             67         CLR   LED3
+0140 D2A7             68         SETB  LED4
+0142 C290             69         CLR   BEEP                      
+0144 756F0A           70         MOV   DelayTimes_100MS, #10       
+0147 120109           71         LCALL Delay100MS 
+                      72     
+014A D2A4             73         SETB  LED1                       
+014C D2A5             74         SETB  LED2
+014E D2A6             75         SETB  LED3
+0150 C2A7             76         CLR   LED4
+0152 D290             77         SETB  BEEP                      
+0154 756F0A           78         MOV   DelayTimes_100MS, #10       
+0157 120109           79         LCALL Delay100MS 
+                      80                      
+015A 22               81     RET                                  ;∫Ø Ω· ¯±Íº«∑˚ 
+                      82         
+                      83     END 
+A51 MACRO ASSEMBLER  MAIN                                                                 10/10/2019 10:10:44 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+BEEP . . . . . . .  B ADDR   0090H.0 A   
+DELAY100MS . . . .  C ADDR   0109H   A   
+DELAY100MS_1 . . .  C ADDR   010BH   A   
+DELAY100MS_2 . . .  C ADDR   010DH   A   
+DELAY100MS_3 . . .  C ADDR   010FH   A   
+DELAY100MS_4 . . .  C ADDR   0111H   A   
+DELAYTIMES_100MS .  N NUMB   006FH   A   
+LED1 . . . . . . .  B ADDR   00A0H.4 A   
+LED2 . . . . . . .  B ADDR   00A0H.5 A   
+LED3 . . . . . . .  B ADDR   00A0H.6 A   
+LED4 . . . . . . .  B ADDR   00A0H.7 A   
+LEDRUN . . . . . .  C ADDR   011AH   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+START. . . . . . .  C ADDR   0100H   A   
+START1 . . . . . .  C ADDR   0103H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

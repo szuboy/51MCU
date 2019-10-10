@@ -1,0 +1,22 @@
+<html>
+<body>
+<pre>
+<h1>µVision3 Build Log</h1>
+<h2>Project:</h2>
+E:\51MCU\LAB03\LED_ASM\LED.uv2
+Project File Date:  10/10/2019
+
+<h2>Output:</h2>
+assembling main.asm...
+main.asm - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=8.0 xdata=0 code=347
+creating hex file from "LED"...
+"LED" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+assembling main.asm...
+linking...
+Program Size: data=8.0 xdata=0 code=347
+creating hex file from "LED"...
+"LED" - 0 Error(s), 0 Warning(s).
